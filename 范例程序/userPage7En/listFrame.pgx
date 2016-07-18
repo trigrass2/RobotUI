@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="listFrame">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_sTitle" type="string" xsi:type="element" />
+      <Parameter name="x_nX" type="num" xsi:type="element" />
+      <Parameter name="x_nY" type="num" xsi:type="element" />
+      <Parameter name="x_nDx" type="num" xsi:type="element" />
+      <Parameter name="x_nDy" type="num" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nDx" type="num" xsi:type="array" size="1" />
+      <Local name="l_nDy" type="num" xsi:type="array" size="1" />
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_sStr" type="string" xsi:type="array" size="1" />
+      <Local name="l_sStrLine" type="string" xsi:type="array" size="1" />
+      <Local name="l_nValue" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Create a list of data, displays the title sTitle, and draw the list
+  //  to the position pX and pY of the userPage (), of pDX length and height
+  //  pDY.
+  // 创建数据的列表，显示标题sTitle，画出用户界面的原点位置pX和pY上，长度和高度为pDX和pDY
+  //Input parameters  输入参数
+  //  num x_nX : 数值量x_nX
+  //    role : cursor column position : top left corner for the beginning of the list menu
+  //    作用：光标列的位置：左上角开始菜单列表
+  //  num x_nY : 数值量x_nY
+  //    role : cursor row position : top left corner for the beginning of the list menu
+  //    作用：光标行的位置：左上角开始菜单列表
+  //  num x_nDx : 数值量x_nDx
+  //    role : width of the box  作用：用户界面的宽度
+  //  num x_nDY : 数值量x_nDY
+  //    role : height of the box  作用：用户界面的高度
+  //
+  //Example
+  //  call listFrame(scrMy,"UserPage",20,0,18,11)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  l_sStrLine="─────────────────────────────────────────"
+  l_nDx=x_nDx
+  l_nDy=x_nDy
+  //Top
+  //Cut the l_sStrLine at the width l_nDx
+  l_sStr="┌"+mid(l_sStrLine,l_nDx,0)+"┐"
+  //Displays the top line
+  gotoxy(x_scr, x_nX,x_nY)
+  put(x_scr, l_sStr)
+  l_nValue=x_nX+2
+  //Title
+  if x_sTitle!=""
+    call leftPos("┤"+x_sTitle+"├",l_nDx,x_sTitle)
+    gotoxy(x_scr, x_nX+l_nDx-getDisplayLen(x_sTitle)+1,x_nY)
+    put(x_scr, x_sTitle)
+  endIf
+  //Containt
+  for i=1 to l_nDy
+    l_nValue=x_nY+i
+    l_sStr="│"
+    gotoxy(x_scr, x_nX,l_nValue)
+    put(x_scr, l_sStr)
+    gotoxy(x_scr, x_nX+l_nDx+1,l_nValue)
+    put(x_scr, l_sStr)
+  endFor
+  //Bottom
+  l_nValue=x_nY+i
+  //Cut the l_sStrLine at the width l_nDx
+  l_sStr="└"+mid(l_sStrLine,l_nDx,0)+"┘"
+  //Displays the bottom line
+  gotoxy(x_scr, x_nX,l_nValue)
+  put(x_scr, l_sStr)
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

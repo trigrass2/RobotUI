@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="listUpdate" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nFirst" type="num" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_nLen" type="num" xsi:type="array" size="1" />
+      <Local name="l_sStr" type="string" xsi:type="array" size="1" />
+      <Local name="l_sStr2" type="string" xsi:type="array" size="1" />
+      <Local name="l_nValue" type="num" xsi:type="array" size="1" />
+      <Local name="l_nView" type="num" xsi:type="array" size="1" />
+      <Local name="l_nX" type="num" xsi:type="array" size="1" />
+      <Local name="l_nY" type="num" xsi:type="array" size="1" />
+      <Local name="l_nSize" type="num" xsi:type="array" size="1" />
+      <Local name="l_bEmpty" type="bool" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Update the menu : moves the list to obtain the Item number x_nFirst
+  //  on the top.
+  // 更新菜单：移动到列表来获得x_nFirst的条目数。
+  //Input parameters  输入参数
+  //  num x_nFirst : 数值量x_nFirst
+  //    role : Element on the top of the menu
+  //   作用：菜单顶部的元素
+  //Example
+  //  call listUpdate(scrMy,0) //put the Item 0 on the top of the list
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  if x_nFirst>=0
+    nFirst=x_nFirst
+  else
+    nFirst=0
+  endIf
+  //Save the coordinate
+  l_nValue=nBottomY-1
+  //Check the overFlow
+  l_nSize=size(sItems)-1
+  if (nFirst+nView>l_nSize)
+    //Reset the value
+    nFirst=nView=0
+  endIf
+  i=0
+  //Check the unKnow problem
+  if l_nSize<l_nValue
+    if nFirst!=0
+      nView=nView+nFirst
+      nFirst=0
+    endIf
+  endIf
+  do
+    l_nX=nTopX+1
+    l_nY=nBottomY+i-1
+    l_nY=nTopY+i+1
+    l_nLen=nBottomX
+    if ((i+nFirst)<size(sItems))
+      //Print the item
+      if (l_nSize>=0)
+        l_sStr=mid(sItems[(i+nFirst)],l_nLen,0)
+      endIf
+    else
+      //Print the blank line
+      l_sStr="                                        "
+    endIf
+    //Fill the line
+    call strFill(l_sStr,l_nLen,l_sStr2)
+    gotoxy(x_scr, l_nX,l_nY)
+    put(x_scr, l_sStr2)
+    i=i+1
+  until (i>l_nValue)
+  //Underline the actual line
+  call isListEmpty(l_bEmpty)
+  if !l_bEmpty
+    call listCursor(x_scr, nView,true)
+  else
+    call listCursor(x_scr, nView,false)
+    nView=0
+    nFirst=0
+  endIf
+  //Print the scroll
+  call printScroll(x_scr)
+  //Leave the resourse
+  delay(0)
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

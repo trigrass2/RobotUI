@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="clear" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nX" type="num" xsi:type="element" />
+      <Parameter name="x_nY" type="num" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="lLen" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin 开头
+  //Description of program  程序描述
+  //  Erase the pY line from the column pX of the userPage.
+  //  在用户界面中，擦除pX列中的PY行
+  //Input parameters  输入参数
+  //  num x_nX : 
+  //    role : Cursor column  作用：光标列
+  //    possible value : 0 to 39  可能的值：0到39
+  //  num x_nY :
+  //    role : Cursor row     作用：光标行
+  //    possible value : 0 to 13  可能的值：0到39
+  //
+  //Example 例子
+  //  call clear(scrMy,15,8)
+  //
+  //History  历史
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 22 Aug 2011 - J. Cook  Added user screens
+  //Header end 结束
+  //-----------------------------------------------------------------------
+  call typeLen(x_scr, x_nX,x_nY," ",40-x_nX)
+  gotoxy(x_scr, x_nX,x_nY)
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

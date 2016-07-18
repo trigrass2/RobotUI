@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="editNumField" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_sTitle" type="string" xsi:type="element" />
+      <Parameter name="x_sItemName" type="string" xsi:type="array" use="reference" />
+      <Parameter name="x_nItem" type="num" xsi:type="array" use="reference" />
+      <Parameter name="x_nMin" type="num" xsi:type="array" use="reference" />
+      <Parameter name="x_nMax" type="num" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="j" type="num" xsi:type="array" size="1" />
+      <Local name="l_nSize" type="num" xsi:type="array" size="1" />
+      <Local name="l_nKey" type="num" xsi:type="array" size="1" />
+      <Local name="l_sEvent" type="string" xsi:type="array" size="1" />
+      <Local name="l_nIndex" type="num" xsi:type="array" size="1" />
+      <Local name="l_nField" type="num" xsi:type="array" size="1" />
+      <Local name="l_sItem" type="string" xsi:type="array" size="1" />
+      <Local name="l_sEmpty" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin 开头
+  //Description of program  程序描述
+  //  Modify numerical values of a list of Items. 修改条目列表的数值量
+  //  When you use this program it creates automatically the list of x_sItemName. 当你使用这个程序，它能够自动创建x_sItemName的列表
+  //  You can navigate and select the Item that you want to modify the value.     你能够导航和选择你想修改值的条目
+  //  If you press on ESC you quit this list and all values that you have entered 如果你按压ESC键，你会退出这个列表，你已经输入的所有值
+  //  will not be saved.                                                          将不会被保存
+  //  You can use an array for the parameters min and max to add limits           你能够使用一个针对最小值最大值的参数的数组去增加
+  //  for every Items.                                                            每一个条目的限制
+  //  If the parameters min and max are equal there are no limits.                如果参数的最小值和最大值是相等的，那儿就没有限制。
+  //
+  //Input parameters  输入参数：
+  //  string x_sTitle :  字符串x_sTitle
+  //    role : Title of the list  作用：列表的标题
+  //
+  //Output parameters  输出参数
+  //  string x_sItemName : 字符串x_sItemName：
+  //    role : array of Items that you want to edit the numerical values 作用：你想要编辑的条目数组的数值量
+  //  num x_nItem :  数值量x_nItem
+  //    role : array of values corresponding of the Items  作用：对应条目的数组值
+  //  num x_nMin :  数值量x_nMin
+  //    role : minimum limit for x_nItem values  作用：x_nItem值的最小值限制
+  //  num x_nMax    数值量x_nMax
+  //    role : maximum limit for x_nItem values  作用：x_nItem值的最大值限制 
+  //
+  //Example 例子
+  //  call editNumField(scrMy,"Menu",sItem,nItem,nMin,nMax)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //  Modified : 08-08-11 - J.Cook     Changed $setTextMode to setTextMode
+  //                                   And replaced literals ("", 0) with local variables 
+  //                                   when passing parameters by reference
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end 结束
+  //-----------------------------------------------------------------------
+  l_sEmpty = ""
+  nView=nFirst=0
+  //Copy all the values x_nItem 复制所有的x_nItem的值
+  call numCopy(x_nItem,nOldValue)
+  l_nSize=size(x_nItem)-1
+  //Create the LIST  创建列表
+  call setSizeList(7,max((6-l_nSize/2)-2,2),23,min((l_nSize+1),8))
+  call listCreate(x_scr, x_sTitle)
+  //Insert Items  插入条目
+  for j=0 to l_nSize
+    l_sItem=x_sItemName[j]
+    call strlength(l_sItem,15)
+    call listAdd(l_sItem+": "+toString(".1",x_nItem[j]))
+  endFor
+  call listUpdate(x_scr, 0)
+  do
+    call clear(x_scr, 0,13)
+    call typeMenu(x_scr, 8,"OK")
+    l_nKey=get(x_scr)
+    call listEvent(x_scr, l_nKey,l_nIndex,l_sEvent)
+    //On Enter Key  在回车键
+    if l_nKey==270
+      call listCursor(x_scr,nView,false)
+      if size(x_nMin)==size(x_nItem)
+        //Use min and max  使用最小值和最大值
+        call changeValue(x_scr, x_nItem[l_nIndex],x_nMin[l_nIndex],x_nMax[l_nIndex],15+10,nView+nTopY+1,l_sEmpty)
+      else
+        call changeValue(x_scr,x_nItem[l_nIndex],0,0,15+10,nView+nTopY+1,l_sEmpty)
+      endIf
+      //UPDATE 更新
+      call listDel(l_nIndex)
+      l_sItem=x_sItemName[l_nIndex]
+      call strlength(l_sItem,15)
+      call listIns(l_sItem+": "+toString(".1",x_nItem[l_nIndex]),l_nIndex)
+      call listUpdate(x_scr,l_nIndex-nView)
+    endIf
+    delay(0)
+  until l_nKey==278 or l_nKey==255
+  //Escape use????  
+  if l_nKey==255
+    bUseEscape=true
+    call numCopy(nOldValue,x_nItem)
+  else
+    bUseEscape=false
+  endIf
+  //Exit
+  call nullKey(x_scr,l_nKey)
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

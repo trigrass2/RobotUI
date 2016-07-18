@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="listIns" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_sItems" type="string" xsi:type="array" use="reference" />
+      <Parameter name="x_nPos" type="num" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_nSize" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Insert an element x_sItem before the number x_nPos.
+  //  插入一个元素x_sItem在x_nPos位置之前
+  //Input parameters 输入参数 
+  //  num x_nPos :  数值量x_nPos
+  //    role : Position in the array sItems where you want to insert an new Item
+  //    作用：在数组sItems的某个位置，你想插入一个新条目
+  //Output parameters  输出参数
+  //  string x_sItem : 字符串x_sItem
+  //    role : Item that you want to insert
+  //   作用：你想去插入的条目
+  //Example
+  //  call listIns("Staubli",3)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  l_nSize=size(sItems)-1
+  //Test if the position x_nPos is in the array 测试是否这个位置在数组中
+  if ((x_nPos>=0) and (x_nPos<=l_nSize))
+    for i=0 to (size(x_sItems)-1)
+      if size(sItems)!=1 or sItems!=""
+        //Insert an element in sItems[] 插入一个元素到sItems[]
+        insert(sItems[x_nPos+i])
+        insert(bReadWrite[x_nPos+i])
+      endIf
+      sItems[x_nPos+i]=x_sItems[i]
+      //For default the RW is true 默认是RW为真
+      bReadWrite[x_nPos+i]=true
+    endFor
+  else
+    //Position not in the array 位置没有在数组中
+    //Insert the element 插入元素
+    call listAdd(x_sItems)
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

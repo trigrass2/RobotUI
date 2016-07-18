@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="setSizeList" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_nPx" type="num" xsi:type="element" />
+      <Parameter name="x_nPy" type="num" xsi:type="element" />
+      <Parameter name="x_nPBottomX" type="num" xsi:type="element" />
+      <Parameter name="x_nPBottomY" type="num" xsi:type="element" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Defines all the parameters of positions and size of the list menu.
+  // 定义列表菜单中所有参数的位置和大小
+  //Input parameters
+  //  num x_nPx:
+  //    role : cursor column position : top left corner for the beginning of
+  //    the list menu
+  //    作用：光标列位置：在列表菜单开始的左上角
+  //  num x_nPy :
+  //    role : cursor column position : top left corner for the beginning of
+  //    the list menu
+  //    作用：光标行位置：在列表菜单的开始的左上角
+  //  num x_nPBottomX
+  //    role : width of the box
+  //    作用：窗口的宽度
+  //  num x_nPBottomY :
+  //    role : height of the box
+  //    作用：窗口的高度
+  //Example
+  //  call setSizeList(20,0,18,11)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  //Put all the parameters in globals variables
+  nTopX=nTopX[1]=x_nPx
+  nTopY=x_nPy
+  nBottomX=nBottomX[1]=x_nPBottomX
+  nBottomY=x_nPBottomY
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

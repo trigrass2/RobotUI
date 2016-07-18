@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="isListEmpty" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_bEmpty" type="bool" xsi:type="array" use="reference" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Test if the list of Items is empty. 测试是否菜单列表为空
+  //
+  //Input parameters 输入参数
+  //  bool x_bEmpty : 布尔量x_bEmpty
+  //    role : Set to true if the list is empty and false otherwise
+  //   作用：如果列表是空的，设为真值，否则返回假值。
+  //Example
+  //  call isListEmpty(l_bEmpty)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  if size(sItems)==1 and sItems[0]==""
+    x_bEmpty=true
+  else
+    x_bEmpty=false
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

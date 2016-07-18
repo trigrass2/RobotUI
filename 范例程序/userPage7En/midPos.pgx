@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="midPos" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_sItem" type="string" xsi:type="element" />
+      <Parameter name="x_nLength" type="num" xsi:type="element" />
+      <Parameter name="x_nPos" type="num" xsi:type="element" />
+      <Parameter name="x_sResult" type="string" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="l_sLeft" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  This program allows to keep x_nLength characters of a string from
+  //  a position x_nPos.
+  // 该程序允许保留一个字符串中x_nPos位置开始的 x_nLength长度的字符。
+  //  The characters before and after x_nPos and x_nPos+x_nLength will be
+  //  truncated.
+  //  字符在x_nPos之前和x_nPos+x_之后的字符都会被截断。
+  //Input parameters  输入参数
+  //  string x_sItem :  字符串x_sItem
+  //    role : string that you wan to cut 作用：你想去切分的字符串
+  //  num x_nLength : 数值量x_nLength
+  //    role : Length of the characters that you want to keep  作用：你想要去保留的字符长度
+  //  num x_nPos :  数值量x_nPos
+  //    role : Position to start keeping characters
+  //  作用：开始保留字符的位置
+  //Output parameters 输出参数
+  //  string x_sResult : 字符串x_sResult
+  //    role : string truncated
+  //   作用：截断后的字符串
+  //Example
+  //  call midPos("Staubli Robotics",4,2,sResult)
+  //  put(sResult) //Displays "aubl"
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  // LEFT SIDE
+  call leftPos(x_sItem,x_nLength+x_nPos,l_sLeft)
+  // update
+  x_sResult=l_sLeft
+  // RIGHT SIDE
+  call rightPos(l_sLeft,x_nLength,x_sResult)
+  // OK ....
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

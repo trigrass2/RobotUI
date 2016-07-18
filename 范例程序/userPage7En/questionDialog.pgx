@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="questionDialog" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_sMsg" type="string" xsi:type="element" />
+      <Parameter name="x_sButton" type="string" xsi:type="array" use="reference" />
+      <Parameter name="x_nResult" type="num" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="lExit" type="bool" xsi:type="array" size="1" />
+      <Local name="nLine" type="num" xsi:type="array" size="1" />
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="nStartLine" type="num" xsi:type="array" size="1" />
+      <Local name="l_sMessage" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Displays a dialog box with a confirm question.
+  //  Possibility to add buttons on the menu.
+  //  After called this program, you will regenerate your interface.
+  //  显示一个是否确认的对话框，有可能在菜单上增加按键，在call这个程序后，你可以再生界面。
+  //Input parameters  输入参数
+  //  string x_sMsg :  字符串x_sMsg
+  //    role : Message that you want to displays in the dialog box
+  //    作用：你想要去显示在对话框里的消息
+  //Output parameter  输出参数
+  //  string x_sButton  字符串x_sButton
+  //    role : Button(s) that you want to display. Possibility to displays up to
+  //    作用：你想要去显示的按键，有可能用到八个键（F1 到 F8）
+  //    8 buttons (F1 to F8).
+  //  num x_nResult : 数值量x_nResult
+  //    role : Contains the number of the key pressed
+  //    作用：包含按键的数值
+  //    posssible values : 0  => ENTER
+  //                       -1 => ESC
+  //                       1  => F8
+  //                       2  => F7
+  //                        ...
+  //                       8  => F1
+  //
+  //Example
+  //  l_sButton="Yes"
+  //  l_sButton[1]="No"
+  //  call questionDialog(scrMy,"Do you want to quit a program ?",l_sButton,l_nKey)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  //Use for other task
+  //If questionDialog is already used, put a message error and return in
+  //the calling program
+  if watch(bShowDialog==false,2)==false
+    bShowDialog=false
+    logMsg("error dialog resoursing")
+    return
+  else
+    setMutex(bShowDialog)
+    if x_sMsg!=""
+      call stringCopy(x_sMsg,sMessage)
+      //Divide the message if it is too long (Search a space for cut the message)
+      //Return the numbers of lines used for writing the message.
+      call divideString(sMessage,nLine)
+      nStartLine=round(5-nLine/2)
+      //Start LINE
+      call type(x_scr, 0,nStartLine-2,"┌──────────────────────────────────────┐")
+      call type(x_scr, 0,nStartLine-1,"│                                      │")
+      //Write the message
+      for i=0 to nLine
+        l_sMessage=sMessage[i]
+        call typeCenter(x_scr, i+nStartLine,l_sMessage,38,false)
+        call type(x_scr, 0,nStartLine+i,"│"+l_sMessage+"│")
+      endFor
+      //End LINE
+      call type(x_scr, 0,nStartLine+nLine+1,"│                                      │")
+      call type(x_scr, 0,nStartLine+nLine+2,"└──────────────────────────────────────┘")
+    endIf
+    //Write the button message
+    call clear(x_scr, 0,13)
+    for i=0 to size(x_sButton)-1
+      call typeMenu(x_scr, 8-i,x_sButton[i])
+    endFor
+    lExit=false
+    x_nResult=-100
+    do
+      nKey=get(x_scr)
+      switch (nKey)
+        //Enter
+        case 270
+          x_nResult=0
+        break
+        //ESC
+        case 255
+          x_nResult=-1
+          bUseEscape=true
+        break
+        default
+          //Look if the button press is defined
+          if (nKey>=271 and nKey<=278) and ((279-nKey)<=size(x_sButton))
+            if x_sButton[278-nKey]!=""
+              x_nResult=279-nKey
+            endIf
+          endIf
+        break
+      endSwitch
+      delay(0)
+    until (x_nResult!=-100)
+    call nullKey(x_scr,nKey)
+    //Release
+    bShowDialog=false
+    bUseRefresh=true
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

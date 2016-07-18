@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="listAdd" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_sItems" type="string" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_nSize" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //Header begin
+  //Description of program
+  //  Insert x_sItems into the list.
+  //  插入x_sItems进入到列表
+  //Input parameters 输入参数
+  //  string x_sItems : 字符串x_sItems
+  //    role : Items to add  作用：要增加的条目
+  //
+  //Example
+  //  call listAdd("Name: > ")
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  for i=0 to (size(x_sItems)-1)
+    if (size(sItems)!=1 or sItems!="") and x_sItems[i]!=""
+      //Insert an Item in sItems[] after the last element.
+      //在最后一个元素之后，在sItems[]插入一个条目。
+      append(sItems)
+      //Insert an Item in bReadWrite[] after the last element.
+      //在最后一个元素之后，在bReadWrite[]插入一个条目
+      append(bReadWrite)
+    endIf
+    if x_sItems[i]!=""
+      sItems[size(sItems)-1]=x_sItems[i]
+      //For default the RW is true 
+      bReadWrite[size(bReadWrite)-1]=true
+    endIf
+  endFor
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

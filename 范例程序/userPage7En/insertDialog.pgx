@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="insertDialog" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_sMsg" type="string" xsi:type="element" />
+      <Parameter name="x_nItem" type="num" xsi:type="array" use="reference" />
+      <Parameter name="x_nMin" type="num" xsi:type="element" />
+      <Parameter name="x_nMax" type="num" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nStartLine" type="num" xsi:type="array" size="1" />
+      <Local name="l_nLine" type="num" xsi:type="array" size="1" />
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_nPX" type="num" xsi:type="array" size="1" />
+      <Local name="l_nPY" type="num" xsi:type="array" size="1" />
+      <Local name="l_sItem" type="string" xsi:type="array" size="1" />
+      <Local name="l_sMessage" type="string" xsi:type="array" size="1" />
+      <Local name="l_sEmpty" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Modify the x_sItem, using a min max range. 修改x_sItem，使用一个最小最大的范围。
+  //  If the two parameters x_nMin and x_nMax are equal there are no limits.
+  //  如果这两个参数x_nMin和x_nMax是相等的，那儿就不存在限制。
+  //  After called this program, you will regenerate your interface.
+  // 在call这个程序后，你会再生你的界面。
+  //Input parameters  输入参数
+  //  string x_sMsg : 字符串x_sMsg
+  //    role : Message that you want to display 作用：你想去显示的消息
+  //  num x_nItem : 数值量x_nItem
+  //    role : Contains the value that you have enter 作用：包含你要去输入的值
+  //  num x_nMin : 数值量x_nMin
+  //    role : Limit minimum value 作用：最小值的限制
+  //  num x_nMax : 数值量x_nMax
+  //    role : Limit maximum value 作用：最大值的限制
+  //
+  //Example
+  //  call insertDialog(scrMy,"Seconds :",l_nValue,0,10000)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //  Modified : 08-08-11 - J.Cook     Changed $setTextMode to setTextMode
+  //                                   And replaced literals ("", 0) with local variables 
+  //                                   when passing parameters by reference
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  //Use for other task 
+  //If "insertDialog" is already used, put a message error and return in
+  //如果"insertDialog"已经被使用，显示一个错误消息，在call程序的时候会返回
+  //the calling program
+  l_sEmpty = ""
+  if watch(bShowDialog==false,2)==false
+    bShowDialog=false
+    logMsg("error dialog resoursing")
+    return
+  else
+    setMutex(bShowDialog)
+    call clear(x_scr, 0,13)
+    l_sItem=toString("",x_nItem)
+    call stringCopy(x_sMsg+">"+l_sItem,sMessage)
+    //Divide the message if it is too long (Search a space for cut the message)
+    //如果消息足够长，可以分割消息
+    //Return the numbers of lines used for writing the message.
+    //返回写入消息的行数
+    call divideString(sMessage,l_nLine)
+    l_nStartLine=round(5-l_nLine/2)
+    //Start LINE
+    call type(x_scr, 0,l_nStartLine-2,"┌──────────────────────────────────────┐")
+    call type(x_scr, 0,l_nStartLine-1,"│                                      │")
+    //Write the message
+    for i=0 to l_nLine
+      //Call type(,"                                      ")
+      l_sMessage=sMessage[i]
+      call typeCenter(x_scr, i+l_nStartLine,l_sMessage,38,false)
+      call type(x_scr, 0,l_nStartLine+i,"│"+l_sMessage+"│")
+    endFor
+    //End LINE
+    call type(x_scr, 0,l_nStartLine+l_nLine+1,"│                                      │")
+    call type(x_scr, 0,l_nStartLine+l_nLine+2,"└──────────────────────────────────────┘")
+    l_nPX=find(l_sMessage,">")+2
+    l_nPY=l_nStartLine+l_nLine
+    //Change the value
+    call changeValue(x_scr, x_nItem,x_nMin,x_nMax,l_nPX,l_nPY,l_sEmpty)
+    bShowDialog=false
+    bUseRefresh=true
+    delay(0)
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="timerDialog" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_sMsg" type="string" xsi:type="element" />
+      <Parameter name="x_nTime" type="num" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nTime" type="num" xsi:type="array" size="1" />
+      <Local name="l_nStartLine" type="num" xsi:type="array" size="1" />
+      <Local name="l_nLine" type="num" xsi:type="array" size="1" />
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_sMessage" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Displays a dialog box from the data message. After called this program,
+  //  you will regenerate your interface.
+  // 从数据消息中显示一个对话窗口。在call这个程序后，你可以再生你的界面。
+  //Input parameters
+  //  string x_sMsg :
+  //    role : Message that you want to display
+  //    作用：你想去展示的消息。
+  //  num x_nTime :
+  //    role : Waiting time before restoring the main
+  //   作用：在存储主界面后，等待的时间
+  //Example
+  //  call timerDialog(scrMy,"Hello",2)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  //Use for other task
+  //If "timerDialog" is already used, put a message error and return in
+  //the calling program
+  //如果"计时器窗口" 已经被使用，弹出一个消息错误，然后回到calling该程序。
+  if watch(bShowDialog==false,2)==false
+    bShowDialog=false
+    logMsg("Error dialog resoursing")
+    return
+  else
+    setMutex(bShowDialog)
+    //Start clock  开始计时
+    l_nTime=clock()
+    //Copy all the values from the first element to the second one
+    // 复制所有的值从第一个元素到第二个元素
+    call stringCopy(x_sMsg,sMessage)
+    //Divide the message if it is too long (Search a space for cut the message)
+    //如果消息太长，把它进行分割（以空格为标志来分割消息）
+    //Return the numbers of lines used for writing the message.
+    //返回用来写消息的行数目。
+    call divideString(sMessage,l_nLine)
+    l_nStartLine=round(5-l_nLine/2)
+    do
+      //Start Line
+      call type(x_scr,0,l_nStartLine-2,"┌──────────────────────────────────────┐")
+      call type(x_scr,0,l_nStartLine-1,"│                                      │")
+      //Write the message
+      for i=0 to l_nLine
+        call type(x_scr,0,l_nStartLine+i,"")
+        call type(x_scr,39,l_nStartLine+i,"")
+        l_sMessage=sMessage[i]
+        //Displays the message in center of the box
+        call typeCenter(x_scr,i+l_nStartLine,l_sMessage,38,false)
+        call type(x_scr,0,l_nStartLine+i,"│"+l_sMessage+"│")
+      endFor
+      //End Line
+      call type(x_scr,0,l_nStartLine+l_nLine+1,"│                                      │")
+      call type(x_scr,0,l_nStartLine+l_nLine+2,"└──────────────────────────────────────┘")
+      //Release
+      if x_nTime==0
+        delay(0.1)
+      else
+        delay(0)
+      endIf
+      //Waiting time
+    until (clock()-l_nTime)>=x_nTime
+    //Reset the variables
+    bShowDialog=false
+    //global variable : Indicates that you want refresh the screen
+    bUseRefresh=true
+    delay(0)
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

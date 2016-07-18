@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="setView" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_bLarge" type="bool" xsi:type="element" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Allows enlarging the width of the list menu. After called this
+  //  program, you will regenerate your interface.
+  //  允许扩大列表菜单的宽度。在call了这个程序后，你将会重生你的界面。
+  //Input parameters
+  //  bool x_bLarge :
+  //    role : For enlarge the width of the list menu. 为了扩大列表才菜单的宽度。
+  //    posssible value : true  => enlarge the width of the list menu
+  //                      false => normal width (width defines with setSizeList)
+  //
+  //Example
+  //  call x_bLarge(true)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  //Save the TopX position in an other element
+  //Put TopX width on the maximum (38) for enlarge the list menu
+  if x_bLarge
+    nTopX[1]=nTopX
+    nTopX=0
+    nBottomX[1]=nBottomX
+    nBottomX=38
+  else
+    //Restore the TopX position saved
+    nTopX=nTopX[1]
+    nBottomX=nBottomX[1]
+  endIf
+  bUseRefresh=true
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

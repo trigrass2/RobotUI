@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="typeMenu" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nKeyFct" type="num" xsi:type="element" />
+      <Parameter name="x_sMessage" type="string" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="l_sMessage" type="string" xsi:type="array" size="1" />
+      <Local name="l_sMessEmpty" type="string" xsi:type="array" size="1" />
+      <Local name="l_nMaxLen" type="num" xsi:type="array" size="1" />
+      <Local name="l_nPosX" type="num" xsi:type="array" size="1" />
+      <Local name="l_nPosY" type="num" xsi:type="array" size="1" />
+      <Local name="l_nStep" type="num" xsi:type="array" size="1" />
+      <Local name="l_nI" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Displays the message x_sMessage (4 characters max otherwise it will be
+  //  truncated)in the userPage above the functions keys F1 to F8 (1 to 8).
+  //  显示用户界面上功能键F1到F8的消息x_sMessage（最多4个字符，否则将会被截断）
+  //Input parameters
+  //  num x_nKeyFct :
+  //    role : function key that you want to display
+  //    作用：你想要去显示的功能键
+  //    possible values : 1 to 8 (there are 8 functions keys : F1 to F8)
+  //    有可能的值：1到8（存在8个功能键：F1到F8）
+  //  string x_sMessage :
+  //    role : Message that you want to display
+  //   作用：你想要去显示的消息
+  //Examples
+  //  call typeMenu(scrMy,1,"Informations") //Displays "Inf." above the F1 key
+  //  call typeMenu(scrMy,5,"List Simple") //Displays "List" above the F5 key
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  l_nStep=5
+  l_nPosY=13
+  l_sMessEmpty="     "
+  if (x_nKeyFct>=1) and (x_nKeyFct<=8)
+    l_nMaxLen=4
+    //Control the length of x_sMessage
+    //Europe case
+    if (getDisplayLen(x_sMessage)>l_nMaxLen)
+      if len(x_sMessage)==getDisplayLen(x_sMessage)
+        //Find a space in the message
+        l_nI=find(x_sMessage," ")
+        if l_nI<5 and l_nI>2
+          //Take only characters before spaces
+          l_sMessage=mid(x_sMessage,l_nI,0)
+        else
+          //Delete characters after the l_nMaxLen-1 and add a point (.) at the end.
+          l_sMessage=mid(x_sMessage,l_nMaxLen-1,0)
+          l_sMessage=l_sMessage+"."
+        endIf
+      else
+        //Asia one
+        l_sMessage=mid(x_sMessage,2,0)
+      endIf
+    else
+      l_sMessage=x_sMessage
+    endIf
+    //Position X
+    l_nPosX=(x_nKeyFct-1)*l_nStep+1
+    //Control the length of l_sMessage and cut it if it's too long
+    call strFill(l_sMessage,4,l_sMessage)
+    //Displays l_sMessage to l_nPosX column and l_nPosY Line
+    call type(x_scr, l_nPosX,l_nPosY,l_sMessage)
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

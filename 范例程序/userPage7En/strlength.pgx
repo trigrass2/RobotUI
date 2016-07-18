@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="strlength">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_sMessage" type="string" xsi:type="array" use="reference" />
+      <Parameter name="x_nLength" type="num" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="lStrEmpty" type="string" xsi:type="array" size="1" />
+      <Local name="l_sTemp" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  lStrEmpty="                                        "
+  // Look for asian message
+  if getDisplayLen(x_sMessage)>x_nLength
+    // Need to divide the message 需要去分割消息
+    if getDisplayLen(x_sMessage)==len(x_sMessage)
+      if mid(x_sMessage,1,x_nLength)!=" "
+        // European message 
+        x_sMessage=mid(x_sMessage,x_nLength-1,0)
+        x_sMessage=x_sMessage+"."
+      else
+        // Found and empty space 
+        x_sMessage=mid(x_sMessage,x_nLength,0)
+      endIf
+    else
+      // Asian one
+      call midPos(x_sMessage,x_nLength,0,x_sMessage)
+    endIf
+  else
+    if getDisplayLen(x_sMessage)<x_nLength
+      // European
+      if getDisplayLen(x_sMessage)==len(x_sMessage)
+        x_sMessage=x_sMessage+mid(lStrEmpty,x_nLength-getDisplayLen(x_sMessage),0)
+      else
+        // Asian
+        call midPos(lStrEmpty,x_nLength-getDisplayLen(x_sMessage),0,l_sTemp)
+        x_sMessage=x_sMessage+l_sTemp
+      endIf
+    else
+      // They are the same
+    endIf
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="printScroll">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="lX" type="num" xsi:type="array" size="1" />
+      <Local name="lY" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Put the scrool on the right of the list menu.
+  // 在列表菜单右边放滚动条
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //Example
+  //  call printScroll(scrMy)
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  if size(sItems)>nBottomY
+    //Find the percentage
+    //Windows style
+    //i=(size(sItems)-nBottomY+1)/(nFirst+1)
+    // nokia style
+    i=(size(sItems))/(nFirst+nView+1)
+    lX=nTopX+nBottomX+1
+    lY=roundUp((nBottomY)/i+nTopY)
+    for i=nTopY+1 to nBottomY
+      gotoxy(x_scr, lX,i)
+      if i==lY
+        //
+        put(x_scr, "■")
+        //
+      else
+        put(x_scr, "│")
+      endIf
+    endFor
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

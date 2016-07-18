@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="nullKey" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nKey" type="num" xsi:type="array" use="reference" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //  Wait a new key was pressed, and put x_nKey to 0.
+  //  等待一些按键后，放x_nKey到0
+  //  This program was used for waiting the release of a button.
+  // 这个程序被用来去等待按键的释放
+  //Input parameter  输入参数
+  //  num x_nKey :  数值量x_nKey
+  //    role : this variable is put to 0 when a new key was pressed.
+  //    作用：当一个新按键被按后，这个变量回到0
+  //Example
+  //  call nullKey(scrMy,l_nKey)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 22 Aug 2011 - J. Cook  Added user screens
+  //Header end
+  //-----------------------------------------------------------------------
+  //Wait a new key stroke
+  wait(getKey(x_scr)==-1)
+  x_nKey=0
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

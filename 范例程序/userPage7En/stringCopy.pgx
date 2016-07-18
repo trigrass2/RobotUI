@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="stringCopy" access="public">
+    <Description><![CDATA[Copy all the value from the x_sCopy to x_sPaste]]></Description>
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_sCopy" type="string" xsi:type="array" use="reference" />
+      <Parameter name="x_sPaste" type="string" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_nSize" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Copy all the values from the first parameter to the second one.
+  //  从第一个参数中复制所有的值到第二个参数中
+  //  You can copy an array of string.
+  //  你可以复制一个字符串数组。
+  //Input parameters
+  //  string x_sCopy :
+  //    role : string that you want to copy
+  //    作用：你想去复制的字符串
+  //  string x_sPaste :
+  //    role : string paste
+  //    作用：粘贴的字符串
+  //Example
+  //  call stringCopy("Robotics",sMessage)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  //Redim the Paste String ARRAY 
+  //Get the length of x_sPaste 得到x_sPaste的长度
+  l_nSize=size(x_sPaste)
+  if size(x_sCopy)>l_nSize
+    //The length of x_sPaste is less than the length of x_sCopy  x_sPaste的长度是少于x_sCopy的长度的
+    for i=l_nSize to (size(x_sCopy)-1)
+      //Insert elements in the array x_sPaste at the 0 index 插入元素到数组x_sPaste到0索引的位置
+      insert(x_sPaste[0])
+    endFor
+  else
+    if size(x_sCopy)<size(x_sPaste)
+      //The length of x_sCopy  is less than the length of x_sPaste
+      for i=size(x_sCopy) to l_nSize-1
+        //Destroy elements of the array x_sPaste at length of x_sCopy index
+        delete(x_sPaste[0])
+      endFor
+    endIf
+  endIf
+  //Copy all the field
+  for i=0 to (size(x_sCopy)-1)
+    x_sPaste[i]=x_sCopy[i]
+  endFor
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

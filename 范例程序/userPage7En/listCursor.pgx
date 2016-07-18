@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="listCursor" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nView" type="num" xsi:type="element" />
+      <Parameter name="x_bShow" type="bool" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nX" type="num" xsi:type="array" size="1" />
+      <Local name="l_nY" type="num" xsi:type="array" size="1" />
+      <Local name="l_sMessage" type="string" xsi:type="array" size="1" />
+      <Local name="l_bEmpty" type="bool" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Place the cursor on the Item selected by x_nView and allows
+  //  to inverse the video.
+  //  将光变放在条目上选择x_nView，允许就是反相显示。
+  //Input parameters  输入参数
+  //  num x_nView : 数值量x_nView
+  //    role : contains the Item selected  作用：包含已选的条目
+  //  num x_bShow : 数值量x_bShow
+  //    role : Allows to inverse video  作用：允许反相显示
+  //    possible values : - true for inverse video  有可能的值：真值，当反相显示
+  //                      - false font normal                   假值，当字体正常
+  //
+  //Example
+  //  call listCursor(scrMy,2,l_bShow)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //  Modified : 08-08-11 - J.Cook     Changed $setTextMode to setTextMode
+  //                                   And replaced literals ("", 0) with local variables 
+  //                                   when passing parameters by reference
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  call isListEmpty(l_bEmpty)
+  if !l_bEmpty
+    //The list is no empty
+    nView=x_nView
+    l_nX=nTopX+1
+    l_nY=nTopY+1+x_nView
+    if (nView+nFirst)>(size(sItems)-1)
+      //Formatting the item depending on the width of the list (nBottomX)
+      call strFill(sItems[size(sItems)-1],nBottomX,l_sMessage)
+    else
+      call strFill(sItems[nView+nFirst],nBottomX,l_sMessage)
+    endIf
+    gotoxy(x_scr, l_nX,l_nY)
+    //Displays the Item
+    if (x_bShow==true)
+      //Inverse video
+      setTextMode(x_scr, 1)
+      put(x_scr, l_sMessage)
+      setTextMode(x_scr, 0)
+    else
+      setTextMode(x_scr, 0)
+      put(x_scr, l_sMessage)
+    endIf
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

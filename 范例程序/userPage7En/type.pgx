@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="type" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nX" type="num" xsi:type="element" />
+      <Parameter name="x_nY" type="num" xsi:type="element" />
+      <Parameter name="x_sMessage" type="string" xsi:type="element" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Displays one string to pX column
+  //  and pY Line.
+  // 显示一个字符串到pX列，pY行。
+  //Input parameters
+  //  num x_nX :
+  //    role : Cursor column
+  //    作用：光标列
+  //  num x_nY :
+  //    role : Cursor row
+  //    作用：光标行
+  //  string x_sMessage :
+  //    role : Message that you want to display
+  //   作用：你想去显示的消息
+  //Example
+  //  call type(scrMy,2,5,"Staubli)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 22 Aug 2011 - J. Cook  Added user screens
+  //Header end
+  //-----------------------------------------------------------------------
+  gotoxy(x_scr, x_nX,x_nY)
+  put(x_scr, x_sMessage)
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

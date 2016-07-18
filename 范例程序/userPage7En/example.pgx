@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="example">
+    <Locals>
+      <Local name="l_nKey" type="num" xsi:type="array" size="1" />
+      <Local name="l_nItem" type="num" xsi:type="array" size="2" />
+      <Local name="l_nView" type="num" xsi:type="array" size="2" />
+      <Local name="l_sItem" type="string" xsi:type="array" size="1" />
+      <Local name="l_sMsg" type="string" xsi:type="array" size="1" />
+      <Local name="l_sButton" type="string" xsi:type="array" size="2" />
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_bLarge" type="bool" xsi:type="array" size="1" />
+      <Local name="l_bQuit" type="bool" xsi:type="array" size="1" />
+      <Local name="l_sMenu" type="string" xsi:type="array" size="1" />
+      <Local name="l_nSeconds" type="num" xsi:type="array" size="1" />
+      <Local name="l_sHourMinSec" type="string" xsi:type="array" size="1" />
+      <Local name="l_sItemName" type="string" xsi:type="array" size="5" />
+      <Local name="l_nItemExample" type="num" xsi:type="array" size="5" />
+      <Local name="l_nMaxExample" type="num" xsi:type="array" size="5" />
+      <Local name="l_nMinExample" type="num" xsi:type="array" size="5" />
+      <Local name="l_nMenu" type="num" xsi:type="array" size="1" />
+      <Local name="l_nSelected" type="num" xsi:type="array" size="2" />
+      <Local name="l_bExit" type="bool" xsi:type="array" size="1" />
+      <Local name="l_nFirst" type="num" xsi:type="array" size="2" />
+      <Local name="l_sEmpty" type="string" xsi:type="array" size="1" />
+      <Local name="l_sText" type="string" xsi:type="array" size="1" />
+      <Local name="l_nZero" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin 开头
+  //Description of program 程序的描述
+  //  This is an example for use this library. 这是一个使用库的例子程序。
+  //  This example performs the following actions : 该程序执行以下动作：
+  //  - Run the fhmns program (converted of num seconds in string hour) 运行fhmns程序(时间转换程序，把秒数转换成几时几分几秒的形式)
+  //  - add, insert, delete, and select an Item with an updating of the menu. 用一个更新的菜单显示增加，插入，删除和选择一个条目
+  //  - change Menu (list of Items) with left and right keys 用左右键改变菜单（条目列表）
+  //  - clear the menu  清除菜单
+  //  - Run a simple list (no array) for just test the scrolling 运行一个简单的列表（没有数组），只为了测试列表滚动条
+  //
+  //  The sequence is : 这个顺序是：
+  //  - Creation of 2 string arrays for the lists of items 条目列表里创建两个字符串数组
+  //  - Start main loop 开始主循环
+  //  -   Creation of the menu with 2 lists  2个列表菜单的创建
+  //  -   Reading events from the keyboard   从键盘中读取事件
+  //  -     case TAB           : update the width of the list (enlarge/reduce)  TAB键：更新列表的宽度（扩大/减少）
+  //  -     case left or right : update the item's list and change the menu    左右键：更新条目的列表和改变菜单
+  //  -     case Enter         : displays the Item selected                    回车键：显示已选的条目
+  //  -     case F1 or ESC     : quit the program                           F1或ESC键：退出程序
+  //  -     case F2            : clear th list                                   F2键：清除列表
+  //  -     case F3            : Run function wich converted seconds             F3键：运行时间转换函数
+  //                              -> string Hours:Min:Sec                              由s转换成h：m：s的形式
+  //  -     case F4            : test editNumField() function                    F4键：测试editNumField()函数
+  //  -     case F5            : creation of an other list : simple list         F5键：创建一个其他列表：简单列表
+  //  -     case F6            : delete an Item                                  F6键：删除一个条目
+  //  -     case F7            : add an item at the end of the list              F7键：在列表末端增加一个条目
+  //  -     case F8            : insert an item at the current position          F8键：在当前的位置插入一个条目 
+  //  -   Update the Item's list                                                 更新条目的列表
+  //  -   Refresh the screen                                                     刷新屏幕
+  //
+  //History                                                                      历史                                                                 
+  //  Creation : 28-04-08 - f.Rob                                                创建：28-04-08 - f.Rob
+  //  Modified : 08-08-11 - J.Cook     Changed $setTextMode to setTextMode       修改：08-08-11 - J.Cook 
+  //                                   And replaced literals ("", 0) with local variables 
+  //                                   when passing parameters by reference            
+  //Header end  结束
+  //-----------------------------------------------------------------------
+  l_sEmpty = ""
+  cls(scr)
+  userPage(scr)
+  //---------------------------------------------------
+  // CREATION OF 2 STRING ARRAYS FOR THE LISTS OF ITEMS 为这个项目的列表创建2字符串数组
+  //---------------------------------------------------
+  //Empty the two lists  清空这两个列表
+  call stringCopy(l_sEmpty,sExample1)
+  call stringCopy(l_sEmpty,sExample2)
+  //Build the first list  建立第一个列表
+  for i=0 to 19
+    if sExample1!=""
+      append(sExample1)
+    endIf
+    sExample1[i]="Program "+toString("",i)
+  endFor
+  //Build the second list  建立第二个列表
+  for i=0 to 14
+    if sExample2!=""
+      append(sExample2)
+    endIf
+    sExample2[i]="Item "+toString("",i)
+  endFor
+  //----------------
+  // START THE LOOP   开始循环
+  //----------------
+  do
+    //-------------------------------------
+    // CREATION OF THE MENU WITH TWO LISTS   创建带两个列表的菜单
+    //-------------------------------------
+    title(scr,"userPage example")
+    //Creation size of the list    创建列表的大小
+    call setSizeList(20,0,18,11)
+    //Enlarge/reduce the width of the list menu when tab is pressed  扩大/减小列表惨淡的宽度，当按tab键
+    call setView(l_bLarge)
+    //Refresh the list     刷新列表
+    call listCreate(scr,"Menu "+toString("",l_nMenu+1))
+    switch l_nMenu
+      //Insert all the array into the list  插入所有的数组进入列表
+      case 0
+        call listAdd(sExample1)
+      break
+      case 1
+        call listAdd(sExample2)
+      break
+    endSwitch
+    //Refresh cursor position - selected item  刷新光标位置-选择条目
+    call selectNewField(scr,l_nSelected[l_nMenu],l_nItem[l_nMenu],l_nView[l_nMenu])
+    //Menu  菜单
+    l_sMenu="Exit,Clean,Conversion,Parameter,Simple list,Delete,Add,Insert"
+    call stringToArray(l_sMenu,sMenu)
+    if !l_bLarge
+      //Set the menu at the Y position : 3  设置菜单在Y方向上为3
+      call setMenu(scr,sMenu,true,3)
+    else
+      //Displays the menu on the bottom side not on the left side  显示菜单在底部滑动条上而不是在左边的滑动条上
+      call setMenu(scr,sMenu,true,-1)
+    endIf
+    //-----------------------------------
+    //  READING EVENTS FROM THE KEYBOARD   从键盘中读取事件
+    //-----------------------------------
+    l_nKey=get(scr)
+    call listEvent(scr,l_nKey,l_nItem[l_nMenu],l_sItem) 
+    //Update the cursor position viewing on the screen  更新屏幕上显示的光标位置
+    //The two lists are independent so utilisation of an array with two elements  这两个列表是独立的，利用的是两个元素的一个数组
+    l_nView[l_nMenu]=nView
+    //Update the selection of the Item  更新条目的选择
+    l_nSelected[l_nMenu]=l_nItem[l_nMenu]
+    switch (l_nKey)
+      //Tab  Tab键
+      //------------------------------------------------
+      //  UPDATE THE WIDTH OF THE LIST (ENLARGE/REDUCE)   更新列表的宽度（扩大/缩小）
+      //------------------------------------------------
+      case 259
+        //Variable corresponding to Enlarge/Reduce the width of the list  变量对应的是扩大/缩小列表的宽度
+        l_bLarge=!l_bLarge
+      break
+      //Left or Right 左边或右边
+      //---------------------------------------------
+      //  UPDATE THE ITEM'S LIST AND CHANGE THE MENU  更新条目的列表和改变菜单
+      //---------------------------------------------
+      case 264,268
+        switch l_nMenu
+          case 0
+            call stringCopy(sItems,sExample1)
+          break
+          case 1
+            call stringCopy(sItems,sExample2)
+          break
+        endSwitch
+        //Update l_nMenu  更新l_nMenu
+        if l_nKey==264
+          //Right   右边
+          //Increment l_nMenu   l_nMenu的增加
+          l_nMenu=abs(l_nMenu-1)%2
+        else
+          //Left    左边
+          //Decrement l_nMenu   l_nMenu的减少
+          l_nMenu=abs(l_nMenu+1)%2
+        endIf
+        //Update the selected item  更新已选的条目
+        l_nSelected[l_nMenu]=l_nItem[l_nMenu]
+      break
+      //Enter   回车
+      //-----------------------------
+      //  DISPLAYS THE ITEM SELECTED  显示已选的条目
+      //-----------------------------
+      case 270
+        //No action just displays a message, it's an example  没有动作仅仅显示一条信息，这是一个列子
+        call timerDialog(scr,"Selected item: "+l_sItem,1)
+      break
+      //F1  F1键
+      //-------------------
+      //  QUIT THE PROGRAM   退出程序
+      //-------------------
+      case 271
+        //Creation of two buttons functions  创建两个按键函数
+        //l_sButton    : F8  l_sButton：F8键  
+        //l_sButton[1] : F7  l_sButton[1]：F7键
+        l_sButton="Yes"
+        l_sButton[1]="No"
+        call questionDialog(scr,"Do you want to quit ?",l_sButton,l_nKey)
+        //"Enter" or "F8" pressed   按"回车"或者按"F8"
+        if l_nKey==0 or l_nKey==1
+          l_bQuit=true
+        endIf
+        cls(scr)
+      break
+      //F2  F2键
+      //-----------------
+      //  CLEAR THE LIST  清除列表
+      //-----------------
+      case 272
+        //Creation of two buttons functions  创建两个按键函数
+        //l_sButton    : F8  l_sButton：F8键
+        //l_sButton[1] : F7  l_sButton[1]：F7键
+        l_sButton="Yes"
+        l_sButton[1]="No"
+        call questionDialog(scr,"Do you want to clear the list ?",l_sButton,i)
+        if i==0 or i==1
+          call listEmpty()
+        endIf
+      break
+      //F3  F3键
+      //--------------------------------------------------------------
+      //  RUN FUNCTION WICH CONVERTED SECONDS -> STRING HOURS:MIN:SEC  运行时间转换函数：把秒数转换成几时几分几秒的形式
+      //--------------------------------------------------------------
+      case 273
+        cls()
+        call insertDialog(scr,"Number of seconds that you want to convert in Hour:min:sec : #",l_nSeconds,0,0)
+        call fhmns(l_nSeconds,l_sHourMinSec)
+        popUpMsg("Conversion : "+l_sHourMinSec)
+      break
+      //F4  F4键
+      //---------------------------------
+      //  TEST " EDITNUMFIELD " FUNCTION  测试 "EDITNUMFIELD" 函数
+      //---------------------------------
+      case 274
+        //Test editNumField function   测试editNumField函数
+        for i=0 to size(l_sItemName)-1
+          l_sItemName[i]="Item "+toString("",i)
+          //No Limits for all  对所有的情况都没有限制
+          l_nMinExample[i]=0
+          l_nMaxExample[i]=0
+        endFor
+        call editNumField(scr,"Change Parameter",l_sItemName,l_nItemExample,l_nMinExample,l_nMaxExample)
+      break
+      // F5  F5键
+      //------------------------------------------
+      //  CREATION OF AN OTHER LIST : SIMPLE LIST  一个其他列表的创建：简单列表
+      //------------------------------------------
+      case 275
+        //Simple list for test the scrolling 简单列表为了来测试滚动条
+        cls(scr)
+        do
+          l_bExit=false
+          //Size of the list 列表的大小
+          call setSizeList(20,0,18,11)
+          //Creation of the list with the title "Simple list"  创建一个题为"Simple list"列表
+          call listCreate(scr,"Simple list")
+          //Add Items in the list  在列表中增加条目
+          l_sText = "Item 1"
+          call listAdd(l_sText)
+          l_sText = "Item 2"
+          call listAdd(l_sText)
+          l_sText = "Item 3"
+          call listAdd(l_sText)
+          l_sText = "Item 4"
+          call listAdd(l_sText)
+          //Update the list  更新列表
+          call listUpdate(scr,0)
+          call typeMenu(scr,1,"Quit simple list")
+          i=get(scr)
+          l_nZero = 0
+          call listEvent(scr,i,l_nZero,l_sEmpty)
+          switch i
+            case 271,255
+              l_sButton="Yes"
+              l_sButton[1]="No"
+              call questionDialog(scr,"Do you want to quit this program ?",l_sButton,i)
+              //"Enter" or "F8" pressed  按回车键或者F8键
+              if i==0 or i==1
+                l_bExit=true
+              else
+                cls(scr)
+              endIf
+            break
+          endSwitch
+        until l_bExit
+      break
+      //F6  F6键
+      //-----------------
+      //  DELETE AN ITEM  删除一个条目
+      //-----------------
+      case 276
+        //Delete  删除
+        l_sButton="Yes"
+        l_sButton[1]="No"
+        call questionDialog(scr,"Do you want to delete "+l_sItem+" ?",l_sButton,i)
+        if i==0 or i==1
+          call listDel(l_nItem[l_nMenu])
+        endIf
+      break
+      //F7  F7键
+      //---------------------------------
+      //  ADD AN ITEM AT END OF THE LIST  在末尾增加列表的一个条目
+      //---------------------------------
+      case 277
+        call timerDialog(scr,"Add One element #",0)
+        l_sItem="new Item"
+        //Read one string from the keyboard and write it on the  从键盘上读取一个字符串和把它写入到第15列第7行
+        //15 column and 7 line.
+        call read(scr,15,7,l_sItem,10,false)
+        if !bUseEscape
+          call listAdd(l_sItem)
+        endIf
+        switch l_nMenu
+          case 0
+            l_nSelected=size(sExample1)
+          break
+          case 1
+            l_nSelected=size(sExample2)
+          break
+        endSwitch
+      break
+      //F8  F8键
+      //-----------------------------------------
+      //  INSERT AN ITEM AT THE CURRENT POSITION  在当前位置插入一个条目
+      //-----------------------------------------
+      case 278
+        //Insert at the current position  在当前位置插入
+        call timerDialog(scr,"Insert One element #",0)
+        l_sItem="new Item"
+        call read(scr,15,7,l_sItem,10,false)
+        if !isKeyPressed(255) and l_sItem!="new Item"
+          call listIns(l_sItem,l_nItem[l_nMenu])
+        endIf
+      break
+    endSwitch
+    //-------------------------
+    //  UPDATE THE ITEM'S LIST  更新条目列表
+    //-------------------------
+    //Update the list  更新列表
+    switch l_nKey
+      case 272,276,277,278
+        //Update the item's list with the global variable 用全局变量来更新条目的列表
+        switch l_nMenu
+          case 0
+            call stringCopy(sItems,sExample1)
+          break
+          case 1
+            call stringCopy(sItems,sExample2)
+          break
+        endSwitch
+      break
+    endSwitch
+    //-------------------
+    //REFRESH THE SCREEN  刷新屏幕
+    //-------------------
+    if l_nKey>=270 and l_nKey<=278 or l_nKey==259
+      cls(scr)
+    endIf
+    delay(0)
+  until l_bQuit
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

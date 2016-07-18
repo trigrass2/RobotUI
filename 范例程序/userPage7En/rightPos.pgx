@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="rightPos" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_sItem" type="string" xsi:type="element" />
+      <Parameter name="x_nLength" type="num" xsi:type="element" />
+      <Parameter name="x_sResult" type="string" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_nLength" type="num" xsi:type="array" size="1" />
+      <Local name="l_sItem" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  This program allows keeping x_nLength characters of a string from
+  //  the right side.
+  //  The characters after x_nLength on the left side will be truncated.
+  //  这个程序允许从右边数起保留x_nLength长度的字符。在x_nLength长度左边的字符会被截断。
+  //Input parameters  输入参数
+  //  string x_sItem : 字符串x_sItem：
+  //    role : string that you wan to cut  作用：你想去分割的字符串
+  //  num x_nLength : 数值量x_nLength：
+  //    role : Length of the characters that you want to keep
+  //   作用：你想去保留的字符长度
+  //Output parameters  输出参数
+  //  string x_sResult :  字符串x_sResult
+  //    role : string truncated  作用：被截断的字符串
+  //
+  //Example
+  //  call leftPos("Staubli Robotics",8,sResult)
+  //  put(sResult) //Displays "Robotics"
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  l_sItem=x_sItem
+  //Divide the string...
+  if len(l_sItem)!=getDisplayLen(l_sItem) and x_nLength<=getDisplayLen(l_sItem)
+    for i=len(x_sItem)-1 to 0 step -1
+      l_nLength=l_nLength+getDisplayLen(right(l_sItem,1))
+      l_sItem=left(l_sItem,len(l_sItem)-1)
+      if l_nLength==x_nLength
+        x_sResult=right(x_sItem,len(x_sItem)-i)
+        return
+      else
+        if l_nLength>x_nLength
+          x_sResult=right(x_sItem,len(x_sItem)-i-1)
+          return
+        endIf
+      endIf
+    endFor
+  endIf
+  x_sResult=right(x_sItem,x_nLength)
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

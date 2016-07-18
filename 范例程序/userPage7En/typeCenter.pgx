@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="typeCenter" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nY" type="num" xsi:type="element" />
+      <Parameter name="x_sMessage" type="string" xsi:type="array" use="reference" />
+      <Parameter name="x_nLength" type="num" xsi:type="element" />
+      <Parameter name="x_bShow" type="bool" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nX" type="num" xsi:type="array" size="1" />
+      <Local name="l_nLenMess" type="num" xsi:type="array" size="1" />
+      <Local name="l_sMessage" type="string" xsi:type="array" size="1" />
+      <Local name="i" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Displays one message in center and at the Y position of the userPage.
+  //  - If x_bShow is true : if the length of the message is greater than
+  //  x_nLength it will be truncated.
+  //  显示一条消息在中间和在用户界面的Y位置。
+  //  如果x_bShow是真值：如果消息的长度是大于长度x_nLength，这将会被截断。
+  //  - If x_bShow is false : if the length of the message is less than
+  //  如果x_bShow是假值：如果消息的长度是小于长度x_nLength，字符会被空格替代，否则消息会被截断。
+  //  x_nLength,the characters are replaced by spaces otherwise the message
+  //  will be truncated.
+  //
+  //Input parameters
+  //  num x_nY :
+  //    role : cursor row  作用：光标行
+  //  num x_nLength :
+  //    role : max lenght of the message  作用：消息的最大长度
+  //  bool x_bShow :
+  //    role : set to true if you just want to display a message and false if
+  //   作用:如果你仅仅想去显示一条消息，就设为真值；如果你想在消息的前面或后面插入空格，那就设为假值。
+  //    you want to add spaces before and after the message.
+  //
+  //Output parameters
+  //  string x_sMessage :
+  //    role : Message that you want to display. It can be modified by
+  //    作用：你想去显示的消息。当你想要在消息的前面或后面插入空格，可以修改程序。
+  //    the program when you want add spaces before and after the message
+  //
+  //Example
+  //  call typeCenter(scrMy,5,"Hello",10,true) //Displays "Hello" in the middle of the line 5
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  l_nLenMess=getDisplayLen(x_sMessage)
+  if (l_nLenMess>x_nLength)
+    //Comprime
+    call strlength(x_sMessage,x_nLength)
+    //Found the pos to start write
+    l_nX=20-(x_nLength/2)
+  else
+    //Found the pos to start write
+    l_nX=20-(l_nLenMess/2)
+  endIf
+  l_sMessage=x_sMessage
+  if x_bShow
+    //You want to display your message
+    call type(x_scr, l_nX,x_nY,l_sMessage)
+  else
+    //Put spaces before the message
+    for i=0 to max(l_nX-(40-x_nLength)/2,0)-1
+      l_sMessage=" "+l_sMessage
+    endFor
+    //Put spaces after the message and give it
+    call strFill(l_sMessage,x_nLength,x_sMessage)
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

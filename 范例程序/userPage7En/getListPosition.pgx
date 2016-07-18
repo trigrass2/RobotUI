@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="getListPosition" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_nIndexX" type="num" xsi:type="array" use="reference" />
+      <Parameter name="x_nIndexY" type="num" xsi:type="array" use="reference" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin 开头
+  //Description of program  程序描述
+  //  Returns the position of the list menu. 返回列表菜单的位置。
+  //
+  //Input parameters  输入参数
+  //  num x_nIndexX : 数值x_nIndexX
+  //    role : cursor column position : top left corner for the beginning of the list menu
+  //    作用：光标列的位置：左上角开始菜单列表
+  //  num x_nIndexY : 数值x_nIndexY
+  //    role : cursor column position : top left corner for the beginning of the list menu
+  //    作用：光标列的位置：左上角开始菜单列表
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  x_nIndexX=nTopX+1
+  x_nIndexY=nFirst+nView+nTopY+1
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

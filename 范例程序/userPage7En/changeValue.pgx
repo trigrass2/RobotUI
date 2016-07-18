@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="changeValue" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nValue" type="num" xsi:type="array" use="reference" />
+      <Parameter name="x_nMin" type="num" xsi:type="element" />
+      <Parameter name="x_nMax" type="num" xsi:type="element" />
+      <Parameter name="x_nX" type="num" xsi:type="element" />
+      <Parameter name="x_nY" type="num" xsi:type="element" />
+      <Parameter name="x_sItem" type="string" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nOldValue" type="num" xsi:type="array" size="2" />
+      <Local name="l_sItem" type="string" xsi:type="array" size="1" />
+      <Local name="l_sMessage" type="string" xsi:type="array" size="1" />
+      <Local name="l_sEmpty" type="string" xsi:type="array" size="1" />
+      <Local name="l_bComma" type="bool" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin 开头
+  //Description of program  程序的描述
+  //  Get a numerical value on the x_nX column and x_nY line and test if    在x_nX列和x_nY行得到一个数值量，测试
+  //  the value is between x_nMin and x_nMax. If the two parameters x_nMin  这个值是否在x_nMin和x_nMax之间。如果这两个参数x_nMin
+  //  and x_nMax are equal there are no limits.                             和x_nMax值相等的，那这里就没有限制了。
+  //  If x_sItems is not Empty, the program displays the list of Items and  如果x_sItems是非空的，程序显示了条目的列表
+  //  you can change the selected Item : the index is returned in x_nValue. 你可以改变已选的条目：索引回到了x_nValue
+  //
+  //Input parameters  输入参数
+  //  num x_nMin :    x_nMin的数值：
+  //    role : min value limit  作用：最小值的限制
+  //  num x_nMax :    x_nMax的数值：
+  //    role : max value limit  作用：最大值的限制
+  //  num x_nX :      x_nX的数值：
+  //    role : X cursor position for change the value  作用：X光标的位置变化值
+  //  num x_nY :      x_nY的数值
+  //    role : Y cursor position for change the value  作用：Y光标的位置变化值
+  //
+  //Output paramaters  输出参数
+  //  num x_nValue :   x_nValue的数值
+  //    role : numerical value changed or index pointer of x_sItem  作用：x_sItem的数值量改变或者索引指针
+  //  string x_sItems  x_sItems的字符串
+  //    role : array of Items  作用：条目的数组
+  //
+  //Example 例子
+  //  call changeValue(scrMy,l_nValue,0,10,2,5,"") //The user can changed the numerical  用户可以改变l_nValue的数值量
+  //                                           value of l_nValue. If the seized          如果得到的值不在0到10范围内，
+  //                                           is not between 0 to 10 the user must      用户必须改变这个值。
+  //                                           changed the value.
+  //
+  //  call changeValue(scrMy,l_nValue,0,10,2,5,sItem) //The list sItem is displaying on  列表条目是正在显示在屏幕上，
+  //                                              the screen and the user select one     用户可以选择列表中的某个元素。
+  //                                              element of the list. The index         索引会回到l_nValue中。
+  //                                              is returned in l_nValue.               
+  //
+  //
+  //History  历史
+  //  Creation : 28-04-08 - f.Rob  创建：28-04-08 - f.Rob
+  //  Modified : 08-08-11 - J.Cook 修改：08-08-11 - J.Cook      
+  //                                   Changed $setTextMode to setTextMode  改变$setTextMode到setTextMode
+  //                                   And replaced literals ("", 0) with local variables   
+  //                                   when passing parameters by reference
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter 增加屏幕参数
+  //Header end  结束
+  //-----------------------------------------------------------------------
+  //
+  if x_nMin>x_nMax
+    return
+  endIf
+  //Print the line in white  已白色打印该行
+  call nullKey(x_scr,nKey)
+  l_nOldValue[1]=round(x_nValue)
+  x_nValue=(round(x_nValue*100))/100
+  l_nOldValue=x_nValue
+  //Check if is using the comma or not  检查有没有使用逗号  
+  if l_nOldValue!=l_nOldValue[1]
+    l_bComma=true
+  else
+    l_bComma=false
+  endIf
+  //Start  开始
+  call clear(x_scr, 0,13)
+  do
+    if x_sItem==""
+      //Use the get num  使用得到数值
+      if l_bComma
+        call strFill(l_sEmpty,len(toString(".2",x_nValue)),l_sEmpty)
+      else
+        call strFill(l_sEmpty,len(toString("",x_nValue)),l_sEmpty)
+      endIf
+      call type(x_scr, x_nX,x_nY,l_sEmpty)
+      gotoxy(x_scr, x_nX,x_nY)
+      nKey=get(x_scr, x_nValue)
+      // CHECK for MIN MAX VALUE 检查最大最小值
+      if x_nMax!=x_nMin
+        if x_nValue>x_nMax
+          //Ask if you want to continue  询问是否你想要继续
+          popUpMsg("MAX: "+toString(".2",x_nMax))
+          x_nValue=l_nOldValue
+          //x_nValue=x_nMax 
+          nKey=-1
+        else
+          if x_nValue<x_nMin
+            popUpMsg("MIN: "+toString(".2",x_nMin))
+            //x_nValue=x_nMin
+            x_nValue=l_nOldValue
+            nKey=-1
+          endIf
+        endIf
+      endIf
+      // UPDATE THE VALUE 更新数值
+      if l_bComma
+        call type(x_scr, x_nX,x_nY,toString(".2",x_nValue))
+      else
+        call type(x_scr, x_nX,x_nY,toString("",x_nValue))
+      endIf
+    else
+      // STRING CHOICE 字符串选择
+      nKey=getKey(x_scr)
+      switch nKey
+        // CHANGE THE ITEMS ARRAY  改变条目数组
+        case 261
+          // UP
+          x_nValue=abs((x_nValue+1)%size(x_sItem))
+        break
+        case 266
+          // DOWN
+          x_nValue=abs((x_nValue+size(x_sItem)-1)%size(x_sItem))
+        break
+      endSwitch
+      // UPDATE THE VALUE 更新数值
+      setTextMode(x_scr, 3)
+      call typeLen(x_scr,x_nX,x_nY,x_sItem[x_nValue],10)
+      setTextMode(x_scr, 0)
+    endIf
+    //Release the resource  释放资源
+    delay(0)
+  until nKey==270 or nKey==255
+  if nKey==255
+    bUseEscape=true
+    x_nValue=l_nOldValue
+    if x_sItem!=""
+      x_sItem=x_sItem[l_nOldValue]
+    endIf
+  else
+    bUseEscape=false
+  endIf
+  //Leave the resource  离开资源
+  delay(0)
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

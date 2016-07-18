@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="read" access="public">
+    <Description><![CDATA[Read one string from the pX column and pY line]]></Description>
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nX" type="num" xsi:type="element" />
+      <Parameter name="x_nY" type="num" xsi:type="element" />
+      <Parameter name="x_sMsg" type="string" xsi:type="array" use="reference" />
+      <Parameter name="x_nLength" type="num" xsi:type="element" />
+      <Parameter name="x_bCrypt" type="bool" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nLength" type="num" xsi:type="array" size="1" />
+      <Local name="l_bExit" type="bool" xsi:type="array" size="1" />
+      <Local name="l_bBlk" type="bool" xsi:type="array" size="1" />
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="p" type="num" xsi:type="array" size="1" />
+      <Local name="l_nTps" type="num" xsi:type="array" size="1" />
+      <Local name="l_sMsg" type="string" xsi:type="array" size="1" />
+      <Local name="l_sView" type="string" xsi:type="array" size="1" />
+      <Local name="l_sStr" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Get a message limited to x_nLength and write it on the pX column
+  //  and pY line.
+  //  得到一条消息长度限制在 x_nLength内，把它写到pX列pY行。
+  //  If x_bCrypt is true all the characters displayed will be replaced by "*",
+  //  otherwise by the corresponding characters.
+  // 如果x_bCrypt是真的，显示的所有字符将会被"*"替代，否则就用相应的字符替代。
+  //  The message is validate by "ENTER" key. "ESC" or "F1 to F8"
+  //  消息是由回车键确认，ESC键火车F1到F8键取消输入，消息将会恢复到初始状态。
+  //  keys cancel value, the message will resume this initial value.
+  //
+  //Input parameters
+  //  num x_nX : 数值量x_nX
+  //    role : Cursor column
+  //    作用：光标列
+  //    possible values : 0 to 39
+  //    可能的值：0到39
+  //  num x_nY : 数值量x_nY
+  //    role : Cursor row
+  //    作用:光标行
+  //    possible values : 0 to 13  可能的值：0到13
+  //  num x_nLength : 数值量x_nLength
+  //    role : limit the lenght of the message
+  //    作用：限制消息的长度
+  //  bool x_bCrypt :  布尔量x_bCrypt
+  //    role : crypt the message that you are seized
+  //    作用：你要抓住的消息
+  //    possibles values : true => crypt the message
+  //                       false => writing normal
+  //
+  //Output parameters 输出参数
+  //  string x_sMsg :  字符串x_sMs
+  //    role : Message reading  作用：读取的消息
+  //
+  //Example
+  //  call read(scrMy,15,7,l_sItem,10,false)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //  Modified : 08-08-11 - J.Cook     Changed $setTextMode to setTextMode
+  //                                   And replaced literals ("", 0) with local variables 
+  //                                   when passing parameters by reference
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  l_nTps=clock()
+  l_sMsg=x_sMsg
+  p=len(l_sMsg)
+  //Cryptage
+  if x_bCrypt
+    do
+      i=len(l_sMsg)
+      nKey=getKey(x_scr)
+      if ((clock()-l_nTps)>=0.5)
+        if l_bBlk==true
+          l_bBlk=false
+        else
+          l_bBlk=true
+        endIf
+        l_nTps=clock()
+      endIf
+      if (nKey>=32) and (nKey<=126)
+        if ((len(l_sMsg)+1)<=x_nLength)
+          l_sMsg=l_sMsg+chr(nKey)
+        endIf
+      else
+        //Backspace
+        if (nKey==263) and (len(l_sMsg)>0)
+          l_sMsg=mid(l_sMsg,len(l_sMsg)-1,0)
+        endIf
+      endIf
+      if (l_sStr!=l_sMsg)
+        call strFillChr(l_sMsg,l_sView,"*")
+        l_sStr=l_sMsg
+      endIf
+      if l_bBlk==true
+        call typeLen(x_scr, x_nX,x_nY,l_sView+"|",x_nLength+1)
+      else
+        call typeLen(x_scr, x_nX,x_nY,l_sView+" ",x_nLength+1)
+      endIf
+      //Release the resource
+      delay(0)
+    until (nKey==270) or (nKey==255)
+  else
+    //Normal read
+    //Delete the old value
+    setTextMode(x_scr, 0)
+    call strFillChr(l_sMsg,l_sView," ")
+    call typeLen(x_scr, x_nX,x_nY,l_sView,40-x_nX-1)
+    //Read the new one
+    gotoxy(x_scr, x_nX,x_nY)
+    get(x_scr, l_sMsg)
+  endIf
+  //Save the escape key pressure
+  if isKeyPressed(x_scr, 255)
+    bUseEscape=true
+  else
+    bUseEscape=false
+  endIf
+  //Result
+  if (isKeyPressed(x_scr, 270) or nKey==270 or l_sMsg!=x_sMsg) and !bUseEscape
+    x_sMsg=l_sMsg
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

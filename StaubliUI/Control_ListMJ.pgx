@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="Control_ListMJ" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_bMJ" type="bool" xsi:type="array" use="reference" />
+      <Parameter name="x_nMoveFirst" type="num" xsi:type="element" />
+      <Parameter name="x_nSelectItem" type="num" xsi:type="element" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nIndex" type="num" xsi:type="array" size="1" />
+      <Local name="l_bRes" type="bool" xsi:type="array" size="1" />
+      <Local name="l_sText" type="string" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  
+  
+//  call Control_ListBas(x_nSelectItem)
+//  
+//  
+//  
+//  
+//  //把列表给画出来
+//  for l_nIndex=0 to min(nBottomY-nTopY-1,size(x_bMJ)-x_nMoveFirst)
+//    
+//    setTextMode(0)
+//    if x_nMoveFirst+l_nIndex>size(x_bMJ)-1
+//      return
+//    endIf
+//    //MOVEL
+//    gotoxy(nTopX+1,nTopY+l_nIndex+1)
+//    if !x_bMJ[x_nMoveFirst+l_nIndex]
+//      if l_nIndex==x_nSelectItem  
+//        setTextMode(1)
+//      else
+//        setTextMode(0)
+//      endIf
+//      put(left(toString("",x_nMoveFirst+l_nIndex+1)+"       ",4 )+left("MOVEJ             ",24-nBottomX))
+//    else
+//      //MOVEC
+//      if l_nIndex==x_nSelectItem
+//        setTextMode(1)
+//      else
+//        setTextMode(0)
+//      endIf
+//      put(left(toString("",x_nMoveFirst+l_nIndex+1)+"       ",4 )+left("MOVEL              ",24-nBottomX))
+//
+//    endIf
+//    
+//  endFor
+//  
+  
+end]]></Code>
+  </Program>
+</Programs>

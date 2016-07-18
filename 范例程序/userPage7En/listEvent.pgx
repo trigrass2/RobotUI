@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="listEvent" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_nKey" type="num" xsi:type="element" />
+      <Parameter name="x_nIndex" type="num" xsi:type="array" use="reference" />
+      <Parameter name="x_sItem" type="string" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nSize" type="num" xsi:type="array" size="1" />
+      <Local name="l_bEmpty" type="bool" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Read events from the keyboard and update the menu:  selected Items,
+  //  cursor position.
+  //  Return the selected Items and this name.
+  //从键盘读取事件和更新菜单:选定的项目,光标位置。
+  //返回选定的项目和名字。
+  //Input parameters  输入参数
+  //  num x_nKey : 数值量x_nKey
+  //    role : Key pressed  作用：按键
+  //Output parameters 输出参数
+  //  num x_nIndex : 数值量x_nIndex
+  //    role : Contains the number of the selected Item
+  //    作用：包含已选条目的数目
+  //  string x_sItem : 字符串x_sItem
+  //    role : Contains the name of the selected Item
+  //    作用：包含了已选条目的名字
+  //Example
+  //  call listEvent(scrMy,l_nKey,nIndex,sItem)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  call isListEmpty(l_bEmpty)
+  if !l_bEmpty
+    //The list is no empty  列表非空
+    l_nSize=size(sItems)-1
+    //Check the overFlow   检查溢出情况
+    l_nSize=size(sItems)-1
+    //Test if the selected element is in the list  测试是否已选元素在列表中
+    if (nFirst+nView>l_nSize)
+      //Reset the value 重设值
+      nFirst=nView=0
+    endIf
+    //Security...
+    switch (x_nKey)
+      //Up
+      case 261
+        //Test if the cursor is not on the top of the menu  测试光标是否在菜单的顶部
+        if ((nView-1)>=0)
+          call listCursor(x_scr, nView,false)
+          //Update the cursor of menu  更新菜单的光标
+          nView=nView-1
+          call listCursor(x_scr,nView,true)
+          //Print the scroll  显示滚动条
+        else
+          if nView==0
+            //Scrool up  滚动条置顶
+            if ((nFirst-1)>=0)
+              nFirst=nFirst-1
+              //Move the Menu for obtain the Item number nFirst 移动菜单为的是获得在顶部的条目数
+              //on the top
+              call listUpdate(x_scr, nFirst)
+            else
+              //Go to the end of the menu  去菜单底部
+              if nView+nFirst!=l_nSize
+                call listCursor(x_scr, nView,false)
+                call selectNewField(x_scr, l_nSize,nFirst+nView,nView)
+              endIf
+            endIf
+          endIf
+        endIf
+      break
+      //Down
+      case 266
+        //Test if the cursor is not on the bottom of the menu  测试光标是否在菜单的底部
+        if ((nView+nFirst+1)<size(sItems))
+          //No need to scrool only change cursor position  没有必要去滚动仅仅改变光标的位置
+          if ((nView+1)<nBottomY)
+            call listCursor(x_scr,nView,false)
+            nView=nView+1
+            call listCursor(x_scr,nView,true)
+            //Print the scroll    显示滚动条
+          else
+            //Move UP  
+            nFirst=nFirst+1
+            //Move the Menu for obtain the Item number nFirst  移动菜单为的是获得在顶部的条目数
+            //on the top
+            call listUpdate(x_scr,nFirst)
+          endIf
+        else
+          //Go to the top of the menu 去到菜单的顶部
+          if !(nView==0 and nFirst==0)
+            call listCursor(x_scr,nView,false)
+            nView=0
+            call listUpdate(x_scr,0)
+          endIf
+        endIf
+      break
+      //Page Up  向上翻页
+      case 262
+        if !(nView==0 and nFirst==0)
+          call listCursor(x_scr,nView,false)
+          if ((nFirst+nView-nBottomY)>=0)
+            //Move one page up 往上翻一页
+            call selectNewField(x_scr,nFirst+nView-nBottomY,nFirst+nView,nView)
+          else
+            //Go to home  回到首页
+            nView=0
+            call listUpdate(x_scr,0)
+          endIf
+        endIf
+      break
+      //Page Down 向下翻页
+      case 267
+        if nView+nFirst!=l_nSize
+          call listCursor(x_scr,nView,false)
+          if ((nView+nFirst+nBottomY)<size(sItems)-1)
+            //Move one page down   向下翻一页
+            call selectNewField(x_scr,nFirst+nView+nBottomY,nFirst+nView,nView)
+          else
+            //Go to the end  到尾页
+            call selectNewField(x_scr,l_nSize,nFirst+nView,nView)
+          endIf
+        endIf
+      break
+      //End
+      case 269
+        if nView+nFirst!=l_nSize
+          //Move to end  移动到末尾
+          call listCursor(x_scr,nView,false)
+          call selectNewField(x_scr,l_nSize,nFirst+nView,nView)
+        endIf
+      break
+      //Home  
+      case 265
+        if !(nView==0 and nFirst==0)
+          //Move to home  回首页
+          call listCursor(x_scr,nView,false)
+          nView=0
+          call listUpdate(x_scr,0)
+        endIf
+      break
+      default
+      break
+    endSwitch
+    x_nIndex=nFirst+nView
+    x_sItem=sItems[x_nIndex]
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

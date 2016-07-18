@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="hmns" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_nSec" type="num" xsi:type="element" />
+      <Parameter name="x_nHour" type="num" xsi:type="array" use="reference" />
+      <Parameter name="x_nMinute" type="num" xsi:type="array" use="reference" />
+      <Parameter name="x_nSecond" type="num" xsi:type="array" use="reference" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Decompose num seconds in num Hours,minutes, seconds.
+  //  分解数值量的秒数为几时几分几秒的形式
+  //Input parameters  输入参数
+  //  num x_nSec : 数值量x_nSec
+  //    role : put a numerical expression that you want to convert in Hmns
+  //    作用：放一个你想转换成Hmns形式的秒数数值表达式
+  //Output parameters 输出参数
+  //  num x_nHour : 数值量x_nHour
+  //    role : numerical expression that contains Hours
+  //    作用：包含小时的数值量表达式
+  //  num x_nMinute :数值量x_nMinute 
+  //    role : numerical expression that contains Minutes
+  //    作用：包含分钟的数值量表达式
+  //  num x_nSecond :数值量x_nSecond
+  //    role : numerical expression that contains Seconds
+  //    作用：包含秒数的数值量表达式
+  //Example
+  //  call hmns(54200,l_nHour,l_nMinute,l_nSecond)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  x_nHour=roundDown(x_nSec/3600)
+  x_nMinute=roundDown((x_nSec%3600)/60)
+  x_nSecond=roundDown(x_nSec-x_nHour*3600-x_nMinute*60)
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

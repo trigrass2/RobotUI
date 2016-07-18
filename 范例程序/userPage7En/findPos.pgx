@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="findPos" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_sText1" type="string" xsi:type="element" />
+      <Parameter name="x_sText2" type="string" xsi:type="element" />
+      <Parameter name="x_nPos" type="num" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="l_nPos" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin  开头
+  //Description of program  程序描述
+  //  This program is identical "find()" but it accepts Chinese characters 这个程序是与"find()"是相同的，但是它还能接受中文字符
+  //  Returns the index of the first character in the first occurrence  在sText1的sText2第一次出现的地方返回第一个字符的索引
+  //  of sText2 in sText1.
+  //  If sText2 does not appear in sText1, the instruction returns -1.  如果sText2没有出现在sText1中，该指令返回-1
+  //
+  // 
+  //Input parameters  输入参数
+  //  string x_sItem1 and x_sItem2 : 字符串x_sItem1和x_sItem2
+  //    role : string 1 to compare with the string 2  作用：字符串2和字符串1相比较
+  //  num x_nPos : 数值 x_nPos
+  //    role : index of the first character in the first occurrence  作用：在sText1的sText2第一次出现的地方返回第一个字符的索引
+  //  of sText2 in sText1
+  //
+  //Example  例子
+  //  call findPos() 
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end  结束
+  //-----------------------------------------------------------------------
+  // Find the char using getDisplayLen 找到使用getDisplayLen的字符
+  l_nPos=find(x_sText1,x_sText2)
+  if l_nPos!=-1
+    x_nPos=getDisplayLen(left(x_sText1,l_nPos))
+  else
+    x_nPos=-1
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

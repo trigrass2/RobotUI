@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="listEmpty" access="public">
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+      <Local name="l_nSize" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Delete all the elements of the list (sItems).
+  //  删除列表（sItems）中的所有元素
+  //Example
+  //  call listEmpty()
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  l_nSize=size(sItems)-1
+  for i=0 to l_nSize
+    if i>0
+      //Destroy all elements of sItems 删除sItems中的所有元素
+      delete(sItems[0])
+      //Destroy all elements of bReadWrite  删除bReadWrite中的所有元素
+      delete(bReadWrite[0])
+    endIf
+  endFor
+  sItems=""
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

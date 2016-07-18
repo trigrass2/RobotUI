@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="getMenu" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_sMenu" type="string" xsi:type="array" use="reference" />
+      <Parameter name="x_bUseMenu" type="bool" xsi:type="array" use="reference" />
+    </Parameters>
+    <Locals>
+      <Local name="i" type="num" xsi:type="array" size="1" />
+    </Locals>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin 开头
+  //Description of program  程序描述
+  //  Returns the status of all the elements of the x_sMenu array.  返回x_sMenu数组所有元素的状态
+  //  If an element is empty, the program returns "true" for the   如果一个元素示空值，程序返回"真"对于
+  //  corresponding element in x_bUseMenu[ ].                      相对应的在x_bUseMenu[ ]的元素。
+  //
+  //Output parameters  输出参数
+  //  string x_sMenu :  字符串x_sMenu
+  //    role : It's an array of string, every elements represent an Item for the
+  //    作用: 这是一个字符串数组，每个元素代表菜单的一个条目。
+  //    menu.
+  //  bool x_bUseMenu : 布尔量x_bUseMenu
+  //    role : Status of all the Element of the x_sMenu array.
+  //    作用：x_sMenu数组的所有元素状态
+  //Example
+  //  call getMenu(sMenu,l_bUseMenu)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  for i=0 to (size(x_bUseMenu)-1)
+    x_bUseMenu[i]=false
+    if (size(x_sMenu)-1)>=i
+      //Element not empty
+      if x_sMenu[i]!=""
+        //Active the button
+        x_bUseMenu[i]=true
+      endIf
+    endIf
+  endFor
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

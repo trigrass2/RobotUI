@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="showBoolStatus" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_bStatus" type="bool" xsi:type="element" />
+      <Parameter name="x_sEvent" type="string" xsi:type="array" use="reference" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  // Add a character "x" in x_sEvent if a x_bStatus bool value is true.
+  // 如果x_bStatus布尔值是真的，增加一个字符"x" 到x_sEvent中。
+  //Input parameters
+  //  bool x_bStatus :
+  //    role : Add the character of status.
+  //    作用：增加字符的状态
+  //    possible values : true => add character x
+  //    有可能的值：真 => 增加字符x
+  //Output parameters
+  //  string x_sEvent :
+  //    role : string returned
+  //    作用：返回的字符串
+  //    possible values : When x_bStatus->true  => x_sEvent -> [x]
+  //                      When x_bStatus->false => x_sEvent -> [ ]
+  //    有可能的值：当x_bStatus->为真=>x_sEvent -> [x]
+  //                当x_bStatus->为假=> x_sEvent -> [ ]
+  //Example
+  //  call showBoolStatus(bStatus,sEvent)
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //Header end
+  //-----------------------------------------------------------------------
+  if x_bStatus
+    x_sEvent="[x]"
+  else
+    x_sEvent="[ ]"
+  endIf
+end
+
+      ]]></Code>
+  </Program>
+</Programs>

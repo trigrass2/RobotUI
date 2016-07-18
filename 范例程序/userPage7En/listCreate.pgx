@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Programs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.staubli.com/robotics/VAL3/Program/2">
+  <Program name="listCreate" access="public">
+    <Parameters xmlns="http://www.staubli.com/robotics/VAL3/Param/1">
+      <Parameter name="x_scr" type="screen" xsi:type="element" use="reference" />
+      <Parameter name="x_sTitle" type="string" xsi:type="element" />
+    </Parameters>
+    <Code><![CDATA[begin
+  //-----------------------------------------------------------------------
+  //Header begin
+  //Description of program
+  //  Create a list of data, displays the title x_sTitle,and draw
+  //  the list from nTopX and nTopY position of the userPage (),
+  //  of nBottomX length and height nBottomY.
+  //  创建一个数据列表，显示x_sTitle的标题，然后画出列表的nTopX和nTopY位置在用户界面中，
+  //  然后再画出长度nBottomX和高度nBottomY。
+  //Input parameters  输入参数
+  //  string x_Title : 字符串x_Title
+  //    role : Title that you want for the list of data
+  //   作用：你想要的数据列表的标题
+  //Example
+  //  Before using listCreate you can use setSizeList for defines all the
+  //  parameters of position and size of the menu.
+  // 在使用listCreate函数时，你能够先使用setSizeList来定义惨淡的位置和大小。
+  //  call setSizeList(20,0,18,11)
+  //  call listCreate(scrMy,"UserPage")
+  //
+  //History
+  //  Creation : 28-04-08 - f.Rob
+  //
+  //  Modified : 08-08-22 - J.Cook     Add screen parameter
+  //Header end
+  //-----------------------------------------------------------------------
+  sTitle=x_sTitle
+  //Creation list of data
+  call listFrame(x_scr,sTitle,nTopX,nTopY,nBottomX,nBottomY)
+  call listEmpty()
+end
+
+      ]]></Code>
+  </Program>
+</Programs>
